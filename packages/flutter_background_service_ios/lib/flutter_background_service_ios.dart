@@ -25,8 +25,7 @@ Future<void> backgroundEntrypoint(List<String> args) async {
   final service = IOSServiceInstance._();
   final int handle = int.parse(args.first);
   final callbackHandle = CallbackHandle.fromRawHandle(handle);
-  final onStart = PluginUtilities.getCallbackFromHandle(callbackHandle)
-      as FutureOr<bool> Function(ServiceInstance instance)?;
+  final onStart = PluginUtilities.getCallbackFromHandle(callbackHandle) as FutureOr<bool> Function(ServiceInstance instance)?;
   if (onStart != null) {
     final result = await onStart(service);
     await service._setBackgroundFetchResult(result);
@@ -67,14 +66,10 @@ class FlutterBackgroundServiceIOS extends FlutterBackgroundServicePlatform {
     _channel.setMethodCallHandler(_handle);
 
     final CallbackHandle? foregroundHandle =
-        iosConfiguration.onForeground == null
-            ? null
-            : PluginUtilities.getCallbackHandle(iosConfiguration.onForeground!);
+        iosConfiguration.onForeground == null ? null : PluginUtilities.getCallbackHandle(iosConfiguration.onForeground!);
 
     final CallbackHandle? backgroundHandle =
-        iosConfiguration.onBackground == null
-            ? null
-            : PluginUtilities.getCallbackHandle(iosConfiguration.onBackground!);
+        iosConfiguration.onBackground == null ? null : PluginUtilities.getCallbackHandle(iosConfiguration.onBackground!);
 
     final result = await _channel.invokeMethod(
       "configure",
@@ -150,8 +145,10 @@ class IOSServiceInstance extends ServiceInstance {
   }
 
   @override
-  Future<void> stopSelf() async {
-    await _channel.invokeMethod("stopService");
+  Future<void> stopSelf({bool killApp = false}) async {
+    await _channel.invokeMethod("stopService", {
+      "kill_app": killApp,
+    });
   }
 
   @override

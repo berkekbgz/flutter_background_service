@@ -22,13 +22,11 @@ Future<void> entrypoint(List<String> args) async {
 class FlutterBackgroundServiceAndroid extends FlutterBackgroundServicePlatform {
   /// Registers this class as the default instance of [FlutterBackgroundServicePlatform].
   static void registerWith() {
-    FlutterBackgroundServicePlatform.instance =
-        FlutterBackgroundServiceAndroid();
+    FlutterBackgroundServicePlatform.instance = FlutterBackgroundServiceAndroid();
   }
 
   FlutterBackgroundServiceAndroid._();
-  static final FlutterBackgroundServiceAndroid _instance =
-      FlutterBackgroundServiceAndroid._();
+  static final FlutterBackgroundServiceAndroid _instance = FlutterBackgroundServiceAndroid._();
   factory FlutterBackgroundServiceAndroid() => _instance;
 
   Future<void> _handleMethodCall(MethodCall call) async {
@@ -65,13 +63,11 @@ class FlutterBackgroundServiceAndroid extends FlutterBackgroundServicePlatform {
     _channel.setMethodCallHandler(_handleMethodCall);
 
     _eventChannelListener?.cancel();
-    _eventChannelListener =
-        _eventChannel.receiveBroadcastStream().listen((event) {
+    _eventChannelListener = _eventChannel.receiveBroadcastStream().listen((event) {
       _controller.sink.add(event);
     });
 
-    final CallbackHandle? handle =
-        PluginUtilities.getCallbackHandle(androidConfiguration.onStart);
+    final CallbackHandle? handle = PluginUtilities.getCallbackHandle(androidConfiguration.onStart);
 
     if (handle == null) {
       throw 'onStart method must be a top-level or static function';
@@ -84,13 +80,10 @@ class FlutterBackgroundServiceAndroid extends FlutterBackgroundServicePlatform {
         "is_foreground_mode": androidConfiguration.isForegroundMode,
         "auto_start": androidConfiguration.autoStart,
         "auto_start_on_boot": androidConfiguration.autoStartOnBoot,
-        "initial_notification_content":
-            androidConfiguration.initialNotificationContent,
-        "initial_notification_title":
-            androidConfiguration.initialNotificationTitle,
+        "initial_notification_content": androidConfiguration.initialNotificationContent,
+        "initial_notification_title": androidConfiguration.initialNotificationTitle,
         "notification_channel_id": androidConfiguration.notificationChannelId,
-        "foreground_notification_id":
-            androidConfiguration.foregroundServiceNotificationId,
+        "foreground_notification_id": androidConfiguration.foregroundServiceNotificationId,
       },
     );
 
@@ -159,8 +152,10 @@ class AndroidServiceInstance extends ServiceInstance {
   }
 
   @override
-  Future<void> stopSelf() async {
-    await _channel.invokeMethod("stopService");
+  Future<void> stopSelf({bool killApp = false}) async {
+    await _channel.invokeMethod("stopService", {
+      "killApp": killApp,
+    });
   }
 
   @override

@@ -10,8 +10,7 @@ abstract class Observable {
   Stream<Map<String, dynamic>?> on(String method);
 }
 
-abstract class FlutterBackgroundServicePlatform extends PlatformInterface
-    implements Observable {
+abstract class FlutterBackgroundServicePlatform extends PlatformInterface implements Observable {
   FlutterBackgroundServicePlatform() : super(token: _token);
   static final Object _token = Object();
 
@@ -44,5 +43,5 @@ abstract class FlutterBackgroundServicePlatform extends PlatformInterface
 
 abstract class ServiceInstance implements Observable {
   /// Stop the service
-  Future<void> stopSelf();
+  Future<void> stopSelf({bool killApp = false});
 }

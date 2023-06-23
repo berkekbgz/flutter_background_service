@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -297,9 +298,14 @@ public class BackgroundService extends Service implements MethodChannel.MethodCa
             }
 
             if (method.equalsIgnoreCase("stopService")) {
+                JSONObject arg = (JSONObject) call.arguments;
+                boolean kill = arg.getBoolean("killApp");
                 isManuallyStopped = true;
                 WatchdogReceiver.remove(this);
                 stopSelf();
+                if (kill) {
+                    Process.killProcess(Process.myPid());
+                }
                 result.success(true);
                 return;
             }
